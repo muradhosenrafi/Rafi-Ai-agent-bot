@@ -10,19 +10,21 @@ import {
 } from "@/components/ui/sidebar"
 import { AppWindow, Blocks, Bot, Layers, Play, Settings, User, User2 } from "lucide-react"
 import Image from "next/image"
-import { usePathname } from "next/navigation"
+import { usePathname,useRouter } from "next/navigation"
 import { Progress } from "../../progress"
 import { UserButton } from "@clerk/nextjs"
 import { useContext, useState } from "react"
 import { UserDetailContext } from "@/app/context/UserDetailContext"
 
+
 export function AppSidebar() {
     const path=usePathname()
+    const router = useRouter ()
     const {userDetail,setUserDetail}=useContext(UserDetailContext)
   return (
     <Sidebar>
       <SidebarHeader className="flex flex-row gap-4 items-center px-4 py-4">
-        <Image src={"./logo.svg"} alt="logo" width={40} height={40}/>
+        <Image src={"/logo.svg"} alt="logo" width={40} height={40}/>
         <h2 className="font-bold font-figtree text-xl text-slate-900">RAFI Ai</h2>
       </SidebarHeader>
       <SidebarContent>
@@ -32,32 +34,32 @@ export function AppSidebar() {
             </SidebarGroupLabel>
 
 
-        <SidebarMenuButton className={`h-12 gap-3 hover:bg-slate-100 ${path.includes("/dashboard")? 'bg-slate-100':null}`}>
+        <SidebarMenuButton onClick={()=>router.push("/dashboard")} className={`h-12 gap-3 hover:bg-slate-100 ${path ==("/dashboard")? 'bg-slate-100':null}`}>
                 <div className="flex h-9 w-8 shrink-0 bg-blue-100 items-center justify-center rounded-lg">
                     <AppWindow className="h=[18px] w-[18px] text-blue-900"/>
                 </div>
                 <span>Dashboard</span>
             </SidebarMenuButton>
 
-        <SidebarMenuButton className={`h-12 gap-3 hover:bg-green-100 ${path.includes("/agents")? 'bg-slate-200':null}`}>
+        <SidebarMenuButton onClick={()=>router.push("/dashboard/agents")} className={`h-12 gap-3 hover:bg-green-100 ${path == ("/agents")? 'bg-slate-200':null}`}>
                 <div className="flex h-9 w-8 shrink-0 bg-green-100 items-center justify-center rounded-lg">
                     <Bot className="h=[18px] w-[18px] text-green-900"/>
                 </div>
                 <span>Agents</span>
             </SidebarMenuButton>
-        <SidebarMenuButton className={`h-12 gap-3 hover:bg-red-100 ${path.includes("/play")? 'bg-slate-100':null}`}>
+        <SidebarMenuButton onClick={()=>router.push("/dashboard/play")} className={`h-12 gap-3 hover:bg-red-100 ${path == ("/play")? 'bg-slate-100':null}`}>
                 <div className="flex h-9 w-8 shrink-0 bg-red-100 items-center justify-center rounded-lg">
                     <Play className="h=[18px] w-[18px] text-red-900"/>
                 </div>
                 <span>Run</span>
             </SidebarMenuButton>
-        <SidebarMenuButton className={`h-12 gap-3 hover:bg-purple-100 ${path.includes("/integrations")? 'bg-slate-100':null}`}>
+        <SidebarMenuButton onClick={()=>router.push("/dashboard/integrations")} className={`h-12 gap-3 hover:bg-purple-100 ${path == ("/integrations")? 'bg-slate-100':null}`}>
                 <div className="flex h-9 w-8 shrink-0 bg-purple-100 items-center justify-center rounded-lg">
                     <Blocks className="h=[18px] w-[18px] text-purple-900"/>
                 </div>
                 <span>Integration</span>
             </SidebarMenuButton>
-        <SidebarMenuButton className={`h-12 gap-3 hover:bg-orange-100 ${path.includes("/template")? 'bg-orange-100-slate-100':null}`}>
+        <SidebarMenuButton onClick={()=>router.push("/dashboard/template")} className={`h-12 gap-3 hover:bg-orange-100 ${path == ("/template")? 'bg-orange-100-slate-100':null}`}>
                 <div className="flex h-9 w-8 shrink-0 bg-orange-100 items-center justify-center rounded-lg">
                     <Layers className="h=[18px] w-[18px] text-orange-900"/>
                 </div>
@@ -71,14 +73,14 @@ export function AppSidebar() {
                 Users
             </SidebarGroupLabel>
 
-               <SidebarMenuButton className={`h-12 gap-3 hover:bg-gray-100 ${path.includes("/template")? 'bg-orange-100-slate-100':null}`}>
+               <SidebarMenuButton className={`h-12 gap-3 hover:bg-gray-100 ${path == ("/setting")? 'bg-orange-100-slate-100':null}`}>
                 <div className="flex h-9 w-8 shrink-0 bg-gray-100 items-center justify-center rounded-lg">
                     <Settings className="h=[18px] w-[18px] text-gray-900"/>
                 </div>
                 <span>Settings</span>
             </SidebarMenuButton>
 
-             <SidebarMenuButton className={`h-12 gap-3 hover:bg-yellow-100 ${path.includes("/template")? 'bg-orange-100-slate-100':null}`}>
+             <SidebarMenuButton className={`h-12 gap-3 hover:bg-yellow-100 ${path == ("/profile")? 'bg-orange-100-slate-100':null}`}>
                 <div className="flex h-9 w-8 shrink-0 bg-yellow-100 items-center justify-center rounded-lg">
                     <User2 className="h=[18px] w-[18px] text-yellow-900"/>
                 </div>
