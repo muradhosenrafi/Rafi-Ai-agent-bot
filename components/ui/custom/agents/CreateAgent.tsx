@@ -4,6 +4,7 @@ import { Textarea } from '../../textarea'
 import { Button } from '../../button'
 import { ArrowUp, BriefcaseBusiness, Loader2, Loader2Icon, Mail, Plus, Search } from 'lucide-react'
 import axios from 'axios'
+import AIAgentQuestions from './AIAgentQuestions'
 
 const quickSuggestions = [
     {
@@ -61,7 +62,7 @@ const templates = [
 
 type AgentConfigResp = {
     status: "needs_clarification" | "ready"
-    clarificationQuestions: clarificationQuestion,
+    clarificationQuestions: clarificationQuestion[],
     config: any
 }
 
@@ -182,6 +183,11 @@ catch (error) {
       </div>}
       {configResult &&
       <div className='p-5 border rounded-2xl'>
+        
+         {configResult.status === "needs_clarification" && (
+
+            <AIAgentQuestions questionList={configResult.clarificationQuestions} />
+          )}
         <p>{JSON.stringify(configResult)}</p>
       </div>
       }

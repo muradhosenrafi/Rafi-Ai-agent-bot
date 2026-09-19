@@ -16,11 +16,11 @@ const apiKey = process.env.GOOGLE_CLOUD_GEMINI_API_KEY;
 try{
     const ai = new GoogleGenAI({apiKey})
     const response=await ai.models.generateContent({
-        model:"gemini-3.8-flash",
+        model:"gemini-1.5-flash",
         contents:AgentConfigSystemPrompt.replace('{USER_PROMPT}',prompt),
         config:{
 
-            thinkingConfig:{thinkingLevel:ThinkingLevel.MEDIUM},
+            // thinkingConfig:{thinkingLevel:ThinkingLevel.MEDIUM},
             responseMimeType:"application/json",
             responseJsonSchema: AgentConfigRespSchema
         }
