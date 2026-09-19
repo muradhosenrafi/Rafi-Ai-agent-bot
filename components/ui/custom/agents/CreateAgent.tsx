@@ -2,64 +2,106 @@
 import React, { useState } from 'react'
 import { Textarea } from '../../textarea'
 import { Button } from '../../button'
-import { ArrowUp, BriefcaseBusiness, Mail, Plus, Search } from 'lucide-react'
+import { ArrowUp, BriefcaseBusiness, Loader2, Loader2Icon, Mail, Plus, Search } from 'lucide-react'
+import axios from 'axios'
 
 const quickSuggestions = [
-  {
-    label: "Find AI Jobs",
-    prompt: "Find the latest AI developer jobs posted this week that match my skills and summarize the best opportunities for me.",
-  },
-  {
-    label: "Inbox Summary",
-    prompt: "Check my inbox and summarize the most important emails, especially anything that requires my reply or attention.",
-  },
-  {
-    label: "Research Topic",
-    prompt: "Research a topic across the web, compare multiple sources, and give me a concise summary with the most important findings.",
-  },
-  {
-    label: "Plan My Day",
-    prompt: "Check my calendar and upcoming tasks, then create a prioritized plan for everything I should focus on today.",
-  },
-  {
-    label: "Reddit Trends",
-    prompt: "Find trending Reddit discussions about AI tools and agents, then summarize the most useful and interesting conversations.",
-  },
+    {
+        label: "Find AI jobs",
+        prompt: "Find the latest AI developer jobs posted this week that match my skills and summarize the best oppurtunities for me."
+    },
+    {
+        label: "Inbox summary",
+        prompt: "check my inbox and summarize the most important email, especifically anything that requires my reply or attention."
+    },
+    {
+        label: "research topic",
+        prompt: "research a topic across the web, compare multiple sources and give me a concise summary with the most important findings."
+    },
+    {
+        label: "Plan my day",
+        prompt: "check my calendar and upcoming tasks, then create a schedule"
+    },
+    {
+        label: "reddit trends",
+        prompt: "find trending reddit discussions about AI tools and agents, then summarize the most useful and interesting conversations."
+    },
 ]
+
 
 const templates = [
-  {
-    title: "Find latest jobs",
-    description: "Search the web for the latest jobs matching my profile.", // ⚠️ ডানপাশ truncated ছিল, আন্দাজে সম্পূর্ণ করা
-    icon: BriefcaseBusiness,
-    iconBg: "bg-orange-100",
-    iconColor: "text-orange-600",
-    border: "hover:border-orange-300",
-    glow: "hover:shadow-orange-100",
-  },
-  {
-    title: "Daily inbox summary",
-    description: "Summarize important emails and highlight what needs my attention.", // ⚠️ truncated ছিল
-    icon: Mail,
-    iconBg: "bg-blue-100",
-    iconColor: "text-blue-600",
-    border: "hover:border-blue-300",
-    glow: "hover:shadow-blue-100",
-  },
-  {
-    title: "Research a topic",
-    description: "Search the web and create a useful research summary.", // ⚠️ truncated ছিল
-    icon: Search,
-    iconBg: "bg-purple-100",
-    iconColor: "text-purple-600",
-    border: "hover:border-purple-300",
-    glow: "hover:shadow-purple-100",
-  },
+    {
+        title: "Find latest jobs",
+        description: "Search the web for the latest jobs matching my profile",
+        icon: BriefcaseBusiness,
+        iconBg: "bg-orange-100",
+        iconColor: "text-orange-600",
+        border: "hover: border-orange-300",
+        glow: "hover: border-orange-300",
+    },
+    {
+        title: "daily inbox summary",
+        description: "Summarize important emails and highlight what ",
+        icon: Mail,
+        iconBg: "bg-blue-100",
+        iconColor: "text-blue-600",
+        border: "hover: border-blue-300",
+        glow: "hover: border-blue-300",
+    },
+    {
+        title: "Research a topic",
+        description: "Search the web for the latest jobs matching my profile",
+        icon: Search,
+        iconBg: "bg-purple-100",
+        iconColor: "text-purple-600",
+        border: "hover: border-purple-300",
+        glow: "hover: border-purple-300",
+    },
 ]
 
-function CreateAgent() {
+type AgentConfigResp = {
+    status: "needs_clarification" | "ready"
+    clarificationQuestions: clarificationQuestion,
+    config: any
+}
 
-    const [prompt, setPrompt] = useState('')
+export type ClarificationQuestion = {
+    id: string
+    question: string
+    type: "single_select" | "multi_select" | "text" | "number"
+    options: string[]
+    allowCustom: boolean
+    customPlaceholder: string
+}
+
+export type clarificationQuestion = ClarificationQuestion
+
+
+function CreateAgent() {
+  const [prompt, setPrompt] = useState('')
+  const [configResult,setConfigResult] = useState<AgentConfigResp |  null >(null);
+  const [loading,setLoading]=useState(false)
+
+
+
+const OnSubmite= async ()=>{
+  setLoading(true)
+
+  try {
+    const result = await axios.post('/api/agent/configure',{
+    prompt:prompt
+  })
+  console.log(result.data);
+  setConfigResult(result.data)
+  setLoading(false)
+}
+catch (error) {
+    console.error("Failed to configure agent:", error)
+  } finally {
+    setLoading(false)
+  }
+}
+  
 
   return (
     <div className='mt-5'>
@@ -86,8 +128,15 @@ function CreateAgent() {
             </Button>
           </div>
 
-          <Button size={'icon'} className={'h-9 w-9 rounded-full bg-purple-600 flex items-center justify-center'}>
-            <ArrowUp className='size-5  text-amber-100' />
+          <Button
+          disabled={loading}
+          onClick={OnSubmite}
+          size={'icon'} className={'h-9 w-9 rounded-full bg-purple-600 flex items-center justify-center'}>
+
+            {loading?<Loader2 className='animate-spin'/>: <ArrowUp className='size-5  text-amber-100' />}
+           
+
+
           </Button>
         </div>
       </div>
@@ -105,7 +154,12 @@ function CreateAgent() {
 ))}
       </div>
 
-  <div className='mt-10'>
+   { loading ?<div className='flex gap-2 items-center p-5 mt-7 border rounded-xl shadow'>
+        <Loader2Icon className='animate-spin'/>
+        <h2>Generating Agent Config...</h2>
+      </div>:
+
+ !configResult && <div className='mt-10'>
         <h2 className='flex text-lg justify-between items-center font-semibold'>
           Get Started <span className='text-sm font-medium text-muted-foreground cursor-pointer hover:text-purple-600'>View All</span>
         </h2>
@@ -125,7 +179,12 @@ function CreateAgent() {
             </div>
           ))}
         </div>
+      </div>}
+      {configResult &&
+      <div className='p-5 border rounded-2xl'>
+        <p>{JSON.stringify(configResult)}</p>
       </div>
+      }
     </div>
   )
 }
